@@ -25,55 +25,58 @@ public class Student extends BaseAuditDomain {
 	@Column(name="ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name="CITIZEN_ID")
 	private String citizenId;
-	
+
 	@Column(name="FIRST_NAME")
 	private String firstName;
-	
+
 	@Column(name="MID_NAME")
 	private String midName;
-	
+
 	@Column(name="LAST_NAME")
 	private String lastName;
-	
-	@Formula(value = " concat(first_name, ' ', last_name) ")
+
+	@Formula(value = " CONCAT("
+			+ "		UPPER(LEFT(FIRST_NAME, 1)), LOWER(SUBSTRING(FIRST_NAME, 2, LEN(FIRST_NAME))) "
+			+ "		, ' ' "
+			+ "		, UPPER(LEFT(LAST_NAME, 1)), LOWER(SUBSTRING(LAST_NAME, 2, LEN(LAST_NAME)))) ")
 	private String fullName;
-	
+
 	@Column(name="DATE_OF_BIRTH")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateOfBirth;
-	
+
 	@Column(name="STREET_ADDRESS")
 	private String streetAddress;
-	
+
 	@Column(name="CITY")
 	private String city;
-	
+
 	@Column(name="POST_CODE")
 	private String postCode;
-	
+
 	@Column(name="HOME_PHONE")
 	private String homePhone;
-	
+
 	@Column(name="OFFICE_PHONE")
 	private String officePhone;
-	
+
 	@Column(name="MOBILE_PHONE")
 	private String mobilePhone;
-	
+
 	@Column(name="EMAIL_ADDRESS")
 	private String emailAddress;
 
 	public Student() {
-		
+
 	}
-	
+
 	public Student(String citizenId) {
 		this.citizenId = citizenId;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}

@@ -59,16 +59,31 @@ public class CourseEnrolment extends BaseAuditDomain {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="courseEnrolment", cascade=CascadeType.ALL)
 	private List<CourseResult> courseResults;
 
-	@Formula("(select count(o.id) "
-			+ " from COURSE_RESULT o "
-			+ "	inner join ANSWER a on o.answer = a.id"
-			+ " where o.COURSE_ENROLMENT = id"
-			+ " and a.ANSWER_TYPE = 'CORRECT_ANS')")
+//	@Formula("(select count(o.id) "
+//			+ " from COURSE_RESULT o "
+//			+ "	inner join ANSWER a on o.answer = a.id"
+//			+ " where o.COURSE_ENROLMENT = id"
+//			+ " and a.ANSWER_TYPE = 'CORRECT_ANS')")
+	@Formula("(select count(t.id) "
+			+ " from COURSE_RESULT t "
+			+ " inner join ANSWER an on t.ANSWER = an.ID "
+			+ " where t.ID in (select max(cr.id) "
+			+ "	from COURSE_RESULT cr "
+			+ "		inner join ANSWER a on cr.ANSWER = a.ID "
+			+ "		inner join QUESTION q on a.QUESTION = q.ID "
+			+ "		where cr.COURSE_ENROLMENT = id "
+			+ "		group by q.SECTION, q.ID) "
+			+ " and an.ANSWER_TYPE = 'CORRECT_ANS')")
 	private int marks;
 
-	@Formula("(select count(o.id) "
-			+ " from COURSE_RESULT o "
-			+ " where o.COURSE_ENROLMENT = id)")
+//	@Formula("(select count(o.id) "
+//			+ " from COURSE_RESULT o "
+//			+ " where o.COURSE_ENROLMENT = id)")
+	@Formula(" (select count(q.ID) "
+			+ " from COURSE_ENROLMENT ce "
+			+ " inner join SECTION s on ce.SECTION = s.ID "
+			+ " inner join QUESTION q on q.SECTION = s.ID "
+			+ " where ce.ID = id) ")
 	private int fullMarks;
 
 	public Long getId() {
